@@ -1,0 +1,27 @@
+name: glowcraft
+version: 1.0.0+1
+description: >-
+  GlowCraft - A stunning, modern salon app UI built with Flutter (frontend only).
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  google_fonts: ^6.1.0
+  animated_text_kit: ^4.2.2
+  flutter_animate: ^4.2.0
+  flutter_glow: ^0.3.0
+  glassmorphism: ^2.0.0
+  flutter_staggered_animations: ^1.1.1
+  lottie: ^3.0.0
+  provider: ^6.0.5
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/animations/
