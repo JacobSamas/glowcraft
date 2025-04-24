@@ -8,7 +8,7 @@ import 'pages/home_page.dart';
 import 'pages/services_page.dart';
 import 'pages/stylists_page.dart';
 import 'pages/booking_page.dart';
-import 'pages/about_page.dart';
+import 'pages/settings_page.dart';
 import 'widgets/glow_bottom_nav.dart';
 
 void main() {
@@ -38,7 +38,7 @@ class GlowCraftApp extends StatelessWidget {
         '/booking': (_) => const BookingPage(),
         '/services': (_) => const ServicesPage(),
         '/stylists': (_) => const StylistsPage(),
-        '/about': (_) => const AboutPage(),
+        '/about': (_) => const SettingsPage(),
       },
     );
   }
@@ -137,7 +137,7 @@ class _GlowCraftScaffoldState extends State<GlowCraftScaffold> {
     ServicesPage(),
     StylistsPage(),
     BookingPage(),
-    AboutPage(),
+    SettingsPage(),
   ];
 
   @override
