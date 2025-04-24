@@ -303,7 +303,7 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _GlowingActionButton extends StatelessWidget {
+class _GlowingActionButton extends StatefulWidget {
   final String label;
   final IconData icon;
   final VoidCallback onTap;
@@ -315,40 +315,55 @@ class _GlowingActionButton extends StatelessWidget {
     required this.color,
   });
   @override
+  State<_GlowingActionButton> createState() => _GlowingActionButtonState();
+}
+
+class _GlowingActionButtonState extends State<_GlowingActionButton> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.13),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: color.withOpacity(0.36), width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.28),
-                blurRadius: 16,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 15,
+        child: AnimatedScale(
+          scale: _pressed ? 0.94 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+            decoration: BoxDecoration(
+              color: widget.color.withOpacity(0.13),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: widget.color.withOpacity(0.36), width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: widget.color.withOpacity(_pressed ? 0.5 : 0.28),
+                  blurRadius: _pressed ? 26 : 16,
+                  spreadRadius: _pressed ? 6 : 2,
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(widget.icon, color: widget.color, size: 32),
+                const SizedBox(height: 8),
+                Text(
+                  widget.label,
+                  style: GoogleFonts.poppins(
+                    color: widget.color,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -356,7 +371,7 @@ class _GlowingActionButton extends StatelessWidget {
   }
 }
 
-class _BannerCard extends StatelessWidget {
+class _BannerCard extends StatefulWidget {
   final String image;
   final String title;
   final String subtitle;
@@ -370,58 +385,81 @@ class _BannerCard extends StatelessWidget {
     required this.onTap,
   });
   @override
+  State<_BannerCard> createState() => _BannerCardState();
+}
+
+class _BannerCardState extends State<_BannerCard> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            color: Colors.white.withOpacity(0.08),
-            border: Border.all(color: const Color(0xFFB2FFFF).withOpacity(0.18), width: 1.5),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage(image),
+        child: AnimatedScale(
+          scale: _pressed ? 0.96 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: Colors.white.withOpacity(0.08),
+              border: Border.all(color: const Color(0xFFB2FFFF).withOpacity(0.18), width: 1.5),
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(widget.image),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFB2FFFF).withOpacity(_pressed ? 0.25 : 0.15),
+                  blurRadius: _pressed ? 30 : 18,
+                  spreadRadius: _pressed ? 7 : 3,
+                ),
+              ],
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  color: const Color(0xFFB2FFFF),
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                subtitle,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFB2FFFF).withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  cta,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  widget.title,
                   style: GoogleFonts.poppins(
                     color: const Color(0xFFB2FFFF),
-                    fontSize: 14,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-            ],
+                Text(
+                  widget.subtitle,
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFB2FFFF).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    widget.cta,
+                    style: GoogleFonts.poppins(
+                      color: const Color(0xFFB2FFFF),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -429,7 +467,7 @@ class _BannerCard extends StatelessWidget {
   }
 }
 
-class _OfferCard extends StatelessWidget {
+class _OfferCard extends StatefulWidget {
   final IconData icon;
   final Color color;
   final String offer;
@@ -441,40 +479,55 @@ class _OfferCard extends StatelessWidget {
     required this.onTap,
   });
   @override
+  State<_OfferCard> createState() => _OfferCardState();
+}
+
+class _OfferCardState extends State<_OfferCard> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            color: color.withOpacity(0.13),
-            border: Border.all(color: color.withOpacity(0.36), width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.28),
-                blurRadius: 16,
-                spreadRadius: 2,
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 32),
-              const SizedBox(height: 8),
-              Text(
-                offer,
-                style: GoogleFonts.poppins(
-                  color: color,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+        child: AnimatedScale(
+          scale: _pressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: widget.color.withOpacity(0.13),
+              border: Border.all(color: widget.color.withOpacity(0.36), width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: widget.color.withOpacity(_pressed ? 0.45 : 0.28),
+                  blurRadius: _pressed ? 22 : 16,
+                  spreadRadius: _pressed ? 7 : 2,
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.icon, color: widget.color, size: 32),
+                const SizedBox(height: 8),
+                Text(
+                  widget.offer,
+                  style: GoogleFonts.poppins(
+                    color: widget.color,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -482,7 +535,7 @@ class _OfferCard extends StatelessWidget {
   }
 }
 
-class _ServiceMiniCard extends StatelessWidget {
+class _ServiceMiniCard extends StatefulWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -492,33 +545,55 @@ class _ServiceMiniCard extends StatelessWidget {
     required this.onTap,
   });
   @override
+  State<_ServiceMiniCard> createState() => _ServiceMiniCardState();
+}
+
+class _ServiceMiniCardState extends State<_ServiceMiniCard> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Container(
-          margin: const EdgeInsets.only(right: 16),
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            color: Colors.white.withOpacity(0.08),
-            border: Border.all(color: const Color(0xFFB2FFFF).withOpacity(0.18), width: 1.5),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: const Color(0xFFB2FFFF), size: 32),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  color: const Color(0xFFB2FFFF),
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+        child: AnimatedScale(
+          scale: _pressed ? 0.95 : 1.0,
+          duration: const Duration(milliseconds: 120),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              color: Colors.white.withOpacity(0.08),
+              border: Border.all(color: const Color(0xFFB2FFFF).withOpacity(0.18), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFFB2FFFF).withOpacity(_pressed ? 0.38 : 0.18),
+                  blurRadius: _pressed ? 20 : 10,
+                  spreadRadius: _pressed ? 7 : 2,
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.icon, color: const Color(0xFFB2FFFF), size: 32),
+                const SizedBox(height: 8),
+                Text(
+                  widget.label,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFFB2FFFF),
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

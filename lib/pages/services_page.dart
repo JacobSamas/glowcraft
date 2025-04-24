@@ -120,10 +120,9 @@ class ServicesPage extends StatelessWidget {
           right: 28,
           child: Animate(
             effects: [FadeEffect(duration: 900.ms), ScaleEffect()],
-            child: FloatingActionButton.extended(
+            child: _AnimatedFAB(
               backgroundColor: const Color(0xFF88FFFF),
               foregroundColor: const Color(0xFF2A3A6C),
-              elevation: 10,
               onPressed: () => Navigator.of(context).pushNamed('/booking'),
               icon: const Icon(Icons.calendar_today_rounded),
               label: Text(
@@ -138,55 +137,120 @@ class ServicesPage extends StatelessWidget {
   }
 }
 
-class _ServiceGlassCard extends StatelessWidget {
+class _ServiceGlassCard extends StatefulWidget {
   final String title;
   final IconData icon;
   final String desc;
   const _ServiceGlassCard({required this.title, required this.icon, required this.desc});
   @override
+  State<_ServiceGlassCard> createState() => _ServiceGlassCardState();
+}
+
+class _ServiceGlassCardState extends State<_ServiceGlassCard> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
-        gradient: LinearGradient(
-          colors: [const Color(0xFF88FFFF).withOpacity(0.18), Colors.white.withOpacity(0.08)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border.all(color: const Color(0xFF88FFFF).withOpacity(0.32), width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF88FFFF).withOpacity(0.09),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
+    return GestureDetector(
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      onTap: () {}, // Optionally, you can add action here
+      child: AnimatedScale(
+        scale: _pressed ? 0.96 : 1.0,
+        duration: const Duration(milliseconds: 120),
+        child: Material(
+          type: MaterialType.transparency,
+          borderRadius: BorderRadius.circular(26),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 120),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(26),
+              gradient: LinearGradient(
+                colors: [const Color(0xFF88FFFF).withOpacity(0.18), Colors.white.withOpacity(0.08)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF88FFFF).withOpacity(_pressed ? 0.22 : 0.10),
+                  blurRadius: _pressed ? 22 : 12,
+                  spreadRadius: _pressed ? 6 : 2,
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(widget.icon, color: const Color(0xFFB2FFFF), size: 54),
+                const SizedBox(height: 18),
+                Text(
+                  widget.title,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.desc,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFFB2FFFF),
+                    fontSize: 13.5,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
+        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: const Color(0xFFB2FFFF), size: 44),
-            const SizedBox(height: 18),
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              desc,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: const Color(0xFFB2FFFF),
-                fontSize: 13.5,
-              ),
-            ),
-          ],
+    );
+  }
+}
+
+class _AnimatedFAB extends StatefulWidget {
+  final VoidCallback onPressed;
+  final Widget icon;
+  final Widget label;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  const _AnimatedFAB({
+    required this.onPressed,
+    required this.icon,
+    required this.label,
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+  @override
+  State<_AnimatedFAB> createState() => _AnimatedFABState();
+}
+
+class _AnimatedFABState extends State<_AnimatedFAB> {
+  bool _pressed = false;
+  void _setPressed(bool v) => setState(() => _pressed = v);
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onPressed,
+      onTapDown: (_) => _setPressed(true),
+      onTapUp: (_) => _setPressed(false),
+      onTapCancel: () => _setPressed(false),
+      child: AnimatedScale(
+        scale: _pressed ? 0.93 : 1.0,
+        duration: const Duration(milliseconds: 110),
+        child: Material(
+          type: MaterialType.transparency,
+          shape: const StadiumBorder(),
+          child: FloatingActionButton.extended(
+            backgroundColor: widget.backgroundColor,
+            foregroundColor: widget.foregroundColor,
+            elevation: _pressed ? 18 : 10,
+            onPressed: widget.onPressed,
+            icon: widget.icon,
+            label: widget.label,
+          ),
         ),
       ),
     );
